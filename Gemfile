@@ -21,6 +21,8 @@ gem 'uglifier'
 gem 'bootstrap-sass'
 gem 'font-awesome-sass', git: 'https://github.com/zfs-zui/font-awesome-sass.git'
 
+gem 'therubyracer'
+
 group :development do
   gem 'rerun'
   gem 'byebug'
