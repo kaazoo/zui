@@ -4,7 +4,7 @@ require 'open3'
 require_relative 'snapshotable'
 
 # Get the correct ZFS object depending on the path
-def ZFS(path)
+def ZFS(path, type='filesystem')
   return path if path.is_a? ZFS
 
   path = Pathname(path).cleanpath.to_s
@@ -15,6 +15,8 @@ def ZFS(path)
     ZFS::Snapshot.new(path)
   elsif !path.match('/')
     ZFS::Pool.new(path)
+  elsif type == 'volume'
+    ZFS::Volume.new(path)
   else
     ZFS::Filesystem.new(path)
   end
@@ -56,7 +58,8 @@ class ZFS
   def children(opts={})
     raise NotFound if !exist?
 
-    cmd = ZFS.zfs_path + %w(list -H -r -oname -tfilesystem)
+    cmd = ZFS.zfs_path + %w(list -H -r -oname -t)
+    cmd << opts[:type]
     cmd << '-d1' unless opts[:recursive]
     cmd << uid
 
@@ -480,6 +483,77 @@ class ZFS::Filesystem < ZFS
   end
 
   # Rename filesystem
+  def rename!(newname, opts={})
+    raise AlreadyExists if ZFS(newname).exist?
+
+    cmd = ZFS.zfs_path + ['rename']
+    cmd << '-p' if opts[:parents]
+    cmd << name
+    cmd << newname
+
+    out, status = Open3.capture2e(*cmd)
+
+    if status.success? and out.empty?
+      initialize(newname)
+      return self
+    else
+      raise Error, "something went wrong: #{out}"
+    end
+  end
+
+end
+
+class ZFS::Volume < ZFS
+  include Snapshotable
+
+  # Create a new ZFS volume
+  def initialize(uid)
+    super(uid)
+    @pool, @path = *uid.split('/', 2)
+    @name = @path.split('/').last
+  end
+
+  # Create volume
+  def create!(opts={})
+    raise AlreadyExists, "Volume '#{uid}' already exists." if exist?
+
+    cmd = ZFS.zfs_path + ['create']
+    cmd << '-p' if opts[:parents]
+    cmd << '-s' if opts[:sparse]
+    cmd << '-V'
+    cmd << opts[:size].gsub(/\s+/, '')
+    cmd += opts[:zfsopts].map{|el| ['-o', el]}.flatten if opts[:zfsopts]
+    cmd << uid
+    puts cmd
+
+    out, status = Open3.capture2e(*cmd)
+    if status.success? and out.empty?
+      return self
+    elsif out.match(/dataset already exists\n$/)
+      nil
+    else
+      raise Error, "Something went wrong: #{out}, #{status}"
+    end
+  end
+
+  # Destroy volume
+  def destroy!(opts={})
+    raise NotFound if !exist?
+
+    cmd = ZFS.zfs_path + ['destroy']
+    cmd << '-r' if opts[:children]
+    cmd << uid
+
+    out, status = Open3.capture2e(*cmd)
+
+    if status.success? and out.empty?
+      return true
+    else
+      raise Error, "Something went wrong: out = #{out}"
+    end
+  end
+
+  # Rename volume
   def rename!(newname, opts={})
     raise AlreadyExists if ZFS(newname).exist?
 
