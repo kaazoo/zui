@@ -1,0 +1,55 @@
+<header>
+  <div class="title">
+    <h2>
+      <i class="icon system-nm"></i> System
+    </h2>
+  </div>
+
+</header>
+
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs" id="main-tab">
+  <li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
+  <li><a href="#disks" data-toggle="tab">Disks</a></li>
+  <li><a href="#iscsi" data-toggle="tab">iSCSI</a></li>
+  <li><a href="#fcoe" data-toggle="tab">FCoE</a></li>
+  <li><a href="#fc" data-toggle="tab">FC</a></li>
+  <li><a href="#nfs" data-toggle="tab">NFS</a></li>
+  <li><a href="#cifs" data-toggle="tab">CIFS</a></li>
+  <li><a href="#ceph" data-toggle="tab">CEPH</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div class="tab-pane overview-tab active" id="overview">
+   <%= partial(:'system/overview') %>
+  </div>
+
+  <div class="tab-pane" id="disks">
+    <%= partial(:'system/disks') %>
+  </div>
+
+  <div class="tab-pane" id="iscsi">
+    <%= partial(:'system/iscsi') %>
+  </div>
+
+  <div class="tab-pane" id="fcoe">
+    <%= partial(:'system/iscsi') %>
+  </div>
+
+  <div class="tab-pane" id="fc">
+    <%= partial(:'system/iscsi') %>
+  </div>
+
+  <div class="tab-pane" id="nfs">
+    <%= partial(:'system/iscsi') %>
+  </div>
+
+  <div class="tab-pane" id="cifs">
+    <%= partial(:'system/iscsi') %>
+  </div>
+
+  <div class="tab-pane" id="ceph">
+    <%= partial(:'system/iscsi') %>
+  </div>
+</div>

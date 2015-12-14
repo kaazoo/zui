@@ -1,0 +1,29 @@
+<!-- Disks tab -->
+
+<label class="col-sm-2 control-label">Disks</label>
+<div class="col-sm-10">
+  <%- @disks.each do |disk| %>
+    <div class="checkbox"><label class="<%= 'disabled' if disk.partitioned? %>"><input type="checkbox" name="disks[]" value="<%= disk.name %>" <%= 'disabled' if disk.partitioned? %>> <%= "#{disk.name} (#{disk.model} - #{number_to_human_size(disk.size)})" %></label>
+    </div>
+  <% end %>
+</div>
+
+  <div class="row">
+    <!-- Usage column -->
+    <div class="col-md-6 col-lg-4">
+      TODO
+    </div>
+
+    <!-- Properties column -->
+    <div class="properties col-md-6 col-lg-4">
+      TODO
+    </div>
+  </div>
+
+<!-- Status row -->
+<div class="row">
+  <div class="col-sm-12">
+    <h2>Status</h2>
+    <pre>TODO</pre>
+  </div>
+</div>

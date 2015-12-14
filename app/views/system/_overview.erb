@@ -1,0 +1,60 @@
+<!-- Overview tab -->
+
+<!-- Info row -->
+<div class="row">
+  <div class="col-sm-12">
+    <h2>General information</h2>
+    <b>OS:</b> <%= @os_name %> <%= @os_release %> / <%= @platform %><br>
+    <b>CPUs:</b> <%= @cpuinfo %> <br>
+    <b>RAM:</b> <%= @meminfo %> <br>
+    <b>Load average:</b> <%= @load %>
+
+    <h2>Storage controller</h2>
+    <%= @storage_controller %>
+
+    <h2>Network controller</h2>
+    <table>
+      <tr>
+        <th style="padding:5px;">Name</th>
+        <th style="padding:5px;">PCI slot</th>
+        <th style="padding:5px;">Driver</th>
+        <th style="padding:5px;">Interface</th>
+      </tr>        
+    <% @network_interfaces.each do |iface| %>
+      <tr>
+        <td style="padding:5px;"><%= iface[:controller] %></td>
+        <td style="padding:5px;"><%= iface[:pci_slot] %></td>
+        <td style="padding:5px;"><%= iface[:driver] %></td>
+        <td style="padding:5px;"><%= iface[:name] %></td>
+      </tr>
+    <% end %>
+    </table>
+    
+    <h2>Network interfaces</h2>
+    <table>
+      <tr>
+        <th style="padding:5px;">Name</th>
+        <th style="padding:5px;">MAC</th>
+        <th style="padding:5px;">Duplex</th>
+        <th style="padding:5px;">MTU</th>
+        <th style="padding:5px;">State</th>
+        <th style="padding:5px;">Speed</th>
+        <th style="padding:5px;">IPv4</th>
+        <th style="padding:5px;">IPv6</th>
+      </tr>        
+    <% @network_interfaces.each do |iface| %>
+      <tr>
+        <td style="padding:5px;"><%= iface[:name] %></td>
+        <td style="padding:5px;"><%= iface[:address] %></td>
+        <td style="padding:5px;"><%= iface[:duplex] %></td>
+        <td style="padding:5px;"><%= iface[:mtu] %></td>
+        <td style="padding:5px;"><%= iface[:operstate] %></td>
+        <td style="padding:5px;"><%= iface[:speed] %></td>
+        <td style="padding:5px;"><%= iface[:ipv4] %></td>
+        <td style="padding:5px;"><%= iface[:ipv6] %></td>
+      </tr>
+    <% end %>
+    </table>
+
+  </div>
+</div>
