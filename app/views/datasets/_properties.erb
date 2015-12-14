@@ -1,0 +1,29 @@
+<header>
+  <h2 class="title">Properties</h2>
+  <button class="apply-btn">Apply</button>
+</header>
+
+<table class="table table-striped">
+  <tbody>
+    <tr>
+      <td>Mounted</td>
+      <td><%= dataset.mounted? ? 'Yes' : 'No' %></td>
+    </tr>
+    <tr>
+      <td>Mountpoint</td>
+      <td><%= dataset.mountpoint %></td>
+    </tr>
+    <tr>
+      <td>Compression</td>
+      <td><input type="checkbox" class="switch property" name="compression" <%= 'checked data-checked' if dataset.compression? %>></td>
+    </tr>
+    <tr>
+      <td>Deduplication</td>
+      <td><input type="checkbox" class="switch property" name="deduplication" <%= 'checked data-checked' if dataset.dedup? %>></td>
+    </tr>
+    <tr>
+      <td>Read only</td>
+      <td><input type="checkbox" class="switch property" name="readonly" <%= 'checked data-checked' if dataset.readonly? %>></td>
+    </tr>
+  </tbody>
+</table>

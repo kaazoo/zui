@@ -3,7 +3,7 @@
 <h2>New snapshot</h2>
 <div class="row">
   <div class="col-md-6 col-lg-6">
-    <form id="new-snap-form" class="form-horizontal" role="form" method="post" action="/<%= fs.uid %>/snapshot">
+    <form id="new-snap-form" class="form-horizontal" role="form" method="post" action="/<%= dataset.uid %>/snapshot">
       <div class="input-group">
         <input type="text" class="form-control" name="name" placeholder="Name" value="<%= DateTime.now.strftime('%F_%R') %>">
         <span class="input-group-btn">
@@ -15,7 +15,7 @@
 </div>
 
 <h2>Snapshots</h2>
-<%- if fs.snapshots({recursive: recursive}).empty? %>
+<%- if dataset.snapshots({recursive: recursive}).empty? %>
   <p>No snapshots</p>
 <%- else %>
   <table id="snapshots-table" class="snapshots">
@@ -31,7 +31,7 @@
       </tr>
     </thead>
     <tbody>
-      <%- fs.snapshots({recursive: recursive}).each do |snap| %>
+      <%- dataset.snapshots({recursive: recursive}).each do |snap| %>
         <tr data-path="<%= snap.uid %>">
           <td>
             <input type="checkbox" name="snapshots[]" id="<%= snap.uid %>">
@@ -97,9 +97,9 @@
           <div class="col-sm-6">
             <select class="form-control" name="location">
               <!-- List every filesystems of the pool -->
-              <option value="<%= fs.pool %>"><%= fs.pool %></option>
-              <%- ZFS(fs.pool).children({recursive: true, type: 'snapshot'}).each do |f| %>
-                <option value="<%= f.uid %>"><%= f.uid %></option>
+              <option value="<%= dataset.pool %>"><%= dataset.pool %></option>
+              <%- ZFS(dataset.pool).children({recursive: true, type: 'snapshot'}).each do |ds| %>
+                <option value="<%= ds.uid %>"><%= ds.uid %></option>
               <% end %>
             </select>
           </div>

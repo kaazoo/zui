@@ -1,8 +1,15 @@
 <header>
   <div class="title">
     <h2>
-      <img src="<%= image_path('pool.png') %>"> 
-      <%= @pool.name %>
+      <%- if @dataset.type.to_s == 'filesystem' %>
+        <i class="icon folder-nm"></i>
+      <% elsif @dataset.type.to_s == 'volume' %>
+        <i class="icon volume-nm"></i>
+      <% end %>
+      <%= @dataset.path %>
+      <%- if @dataset.origin %>
+        <small>cloned from <%= @dataset.origin.uid %></small>
+      <% end %>
     </h2>
   </div>
 
@@ -12,7 +19,7 @@
         <i class="glyphicon glyphicon-cog"></i> <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
-        <li><a href="/<%= @pool.name %>/extend" data-remote="true"><i class="fa fa-plus-circle"></i> Extend Pool</a></li>
+        <li><a href="#">Rename</a></li>
         <li class="divider"></li>
         <li><a data-toggle="modal" data-target="#destroy-modal" href="#"><i class="fa fa-trash-o"></i> Destroy</a></li>
       </ul>
@@ -23,8 +30,6 @@
 <!-- Nav Tabs -->
 <ul class="nav nav-tabs" id="main-tab">
   <li class="active"><a href="#overview" data-toggle="tab">Overview</a></li>
-  <li><a href="#filesystems" data-toggle="tab">Filesystems</a></li>
-  <li><a href="#volumes" data-toggle="tab">Volumes</a></li>
   <li><a href="#snapshots" data-toggle="tab">Snapshots</a></li>
   <li><a href="#sharing" data-toggle="tab">Sharing</a></li>
 </ul>
@@ -32,47 +37,41 @@
 <!-- Tab panes -->
 <div class="tab-content">
   <div class="tab-pane overview-tab active" id="overview">
-    <%= partial(:'pools/overview', locals: {pool: @pool}) %>
+   <%= partial(:'datasets/overview', locals: {dataset: @dataset}) %>
   </div>
 
-  <%- if @pool.health == :online %>
-    <div class="tab-pane" id="volumes">
-      <%= 
-      #partial(:'filesystems/volumes', locals: {fs: @pool, recursive: true}) 
-      %>
-    </div>
-    <div class="tab-pane" id="snapshots">
-      <%= partial(:'filesystems/snapshots', locals: {fs: @pool, recursive: true}) %>
-    </div>
-  <% end %>
+  <div class="tab-pane" id="snapshots">
+    <%= partial(:'datasets/snapshots', locals: {dataset: @dataset, recursive: false}) %>
+  </div>
+
+  <div class="tab-pane" id="sharing">
+    <%= partial(:'datasets/sharing', locals: {dataset: @dataset}) %>
+  </div>
 </div>
 
 <!-- Destroy modal -->
 <div class="modal fade" id="destroy-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="destroy-form" method="post" action="/<%= @pool.name %>/">
+      <form id="destroy-form" method="post" action="/<%= @dataset.uid %>/">
         <input type="hidden" name="_method" value="delete">
 
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Destroy <%= @pool.name %></h4>
+          <h4 class="modal-title">Destroy <%= @dataset.name %></h4>
         </div>
 
         <div class="modal-body">
           <div class="bs-callout bs-callout-danger">
             <h4>Danger!</h4>
-            <p>You are about to destroy the pool '<%= @pool.name %>'.<br>
+            <p>You are about to destroy the filesystem '<%= @dataset.name %>'.<br>
              This action cannot be undone, and all the data will be unrecoverable.</p>
-            <p>To proceed, enter the pool's name below.</p>
           </div>
-
-          <input type="text" class="form-control" id="pool-name" name="name" placeholder="Enter pool name..." data-pool-name="<%= @pool.name %>">
         </div>
 
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-          <button id="destroy" type="submit" class="btn btn-danger" disabled>Destroy</button>
+          <button id="destroy" type="submit" class="btn btn-danger">Destroy</button>
         </div>
       </form>
     </div>

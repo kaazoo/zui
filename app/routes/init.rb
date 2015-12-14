@@ -1,6 +1,7 @@
 require_relative 'home'
+require_relative 'system'
 require_relative 'pools'
-require_relative 'filesystems'
+require_relative 'datasets'
 require_relative 'snapshots'
 
 class ZUI < Sinatra::Application

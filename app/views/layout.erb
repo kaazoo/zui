@@ -46,6 +46,7 @@
               </button>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="/fs/new">New Filesystem</a></li>
+                <li><a href="/vol/new">New Volume</a></li>
                 <li><a href="/pool/new">New Pool</a></li>
               </ul>
             </div>
@@ -53,13 +54,17 @@
 
           <!-- Pools & folders list -->
           <div class="list">
+            <%= partial(:'sidebar/system', locals: {selected: @selected}) %>
             <% @pools.each do |pool| %>
               <!-- Pool -->
               <%= partial(:'sidebar/pool', locals: {pool: pool, selected: @selected}) %>
 
               <!-- List pool's folders -->
-              <% pool.children({recursive: true}).each do |fs| %>
-                <%= partial(:'sidebar/filesystem', locals: {fs: fs, selected: @selected}) %>
+              <% pool.children({recursive: true, type: 'filesystem'}).each do |datset| %>
+                <%= partial(:'sidebar/filesystem', locals: {fs: datset, selected: @selected}) %>
+              <% end %>
+              <% pool.children({recursive: true, type: 'volume'}).each do |datset| %>
+                <%= partial(:'sidebar/volume', locals: {vol: datset, selected: @selected}) %>
               <% end %>
             <% end %>
           </div>
